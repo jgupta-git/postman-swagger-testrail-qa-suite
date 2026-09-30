@@ -6,62 +6,59 @@ Automated test result reporting from a Cucumber/Playwright test suite to TestRai
 
 ## What This Project Does
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                        Jenkins CI/CD Pipeline                        │
-│                                                                      │
-│  ┌─────────────┐    ┌─────────────────┐    ┌─────────────────────┐  │
-│  │  Git Pull    │───▶│  Maven + Cucumber│───▶│  Playwright Tests   │  │
-│  │  (GitHub)    │    │  (saucedemo      │    │  (Browser Automation)│  │
-│  └─────────────┘    │   profile)       │    └────────┬────────────┘  │
-│                     └─────────────────┘             │               │
-│                                                      ▼               │
-│                     ┌──────────────────────────────────────────┐     │
-│                     │  TestRailReportingHook.java               │     │
-│                     │  ┌────────────────────────────────────┐  │     │
-│                     │  │ 1. @After hook fires after each    │  │     │
-│                     │  │    Cucumber scenario                │  │     │
-│                     │  │ 2. Extracts @Cxx tag → case ID     │  │     │
-│                     │  │ 3. Maps PASS → status 1,            │  │     │
-│                     │  │         FAIL → status 5             │  │     │
-│                     │  │ 4. POSTs to TestRail API v2         │  │     │
-│                     │  └────────────────────────────────────┘  │     │
-│                     └──────────────────┬───────────────────────┘     │
-│                                        │                             │
-└────────────────────────────────────────┼─────────────────────────────┘
-                                         │
-                                         ▼
-                          ┌──────────────────────────┐
-                          │       TestRail Cloud       │
-                          │                            │
-                          │  POST /api/v2/              │
-                          │    add_result_for_case/     │
-                          │    {run_id}/{case_id}       │
-                          │                            │
-                          │  Run #3: 13/13 PASSED ✓    │
-                          └──────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph Jenkins["Jenkins CI/CD Pipeline"]
+        A["Git Pull\n(GitHub)"] --> B["Maven + Cucumber\n(saucedemo profile)"]
+        B --> C["Playwright Tests\n(Browser Automation)"]
+        C --> D["TestRailReportingHook.java"]
+    end
+
+    D --> E["TestRail Cloud"]
+
+    subgraph Hook["TestRailReportingHook.java — @After Hook"]
+        D1["1. Fires after each Cucumber scenario"]
+        D2["2. Extracts @Cxx tag → case ID"]
+        D3["3. Maps PASS → status 1, FAIL → status 5"]
+        D4["4. POSTs to TestRail API v2"]
+        D1 --> D2 --> D3 --> D4
+    end
+
+    D -.-> Hook
+
+    subgraph TR["TestRail Cloud"]
+        E1["POST /api/v2/add_result_for_case/\n{run_id}/{case_id}"]
+        E2["Run #3: 13/13 PASSED ✓"]
+        E1 --> E2
+    end
+
+    E -.-> TR
 ```
 
 ---
 
 ## Directory Structure
 
-```
-testrail-automation-integration/
-│
-├── README.md                          ← You are here
-│
-├── automation-integration-files/
-│   ├── TestRailReportingHook.java     ← Cucumber @After hook (posts results to TestRail)
-│   └── jenkins-config.md             ← Jenkins freestyle job configuration docs
-│
-├── test-cases/
-│   ├── saucedemo-test-cases.csv       ← All 13 test cases exported from TestRail
-│   └── test-plan.md                   ← Milestone, test plan, and test run details
-│
-└── reports/
-    └── (TestRail run reports — PDF exports)
-```
+**`testrail-automation-integration/`**
+
+| Path | Description |
+|------|-------------|
+| **artifacts/** | |
+| ├── [milestone_activity.png](artifacts/milestone_activity.png) | Milestone timeline — all 13 tests posted automatically |
+| ├── [milestone_status.png](artifacts/milestone_status.png) | Pie chart — 100% pass rate |
+| ├── [milestones.png](artifacts/milestones.png) | Milestones overview |
+| ├── [project_overview.png](artifacts/project_overview.png) | TestRail project dashboard |
+| ├── [single_test_case.png](artifacts/single_test_case.png) | Test case C2 detail view |
+| ├── [testcases.png](artifacts/testcases.png) | All 6 sections, C2–C14 |
+| └── [testrun_report.png](artifacts/testrun_report.png) | Run results — 13/13 PASSED |
+| **automation-integration-files/** | |
+| ├── [TestRailReportingHook.java](automation-integration-files/TestRailReportingHook.java) | Cucumber `@After` hook (posts results to TestRail) |
+| └── [jenkins-config.md](automation-integration-files/jenkins-config.md) | Jenkins freestyle job configuration docs |
+| **test-cases/** | |
+| ├── [saucedemo-test-cases.csv](test-cases/saucedemo-test-cases.csv) | All 13 test cases exported from TestRail |
+| └── [test-plan.md](test-cases/test-plan.md) | Milestone, test plan, and test run details |
+| **reports/** | |
+| └── [Regression & Smoke - TestRail.pdf](reports/Regression%20%26%20Smoke%20-%20TestRail.pdf) | TestRail run report (PDF export) |
 
 ---
 
@@ -147,13 +144,27 @@ This design lets Jenkins pass most values as Maven flags while keeping the **API
 
 ---
 
+## TestRail Screenshots
+
+Since the TestRail instance is a 30-day trial (`testingdemoforinterview.testrail.io`), screenshots are preserved in the [`artifacts/`](artifacts/) directory for reference:
+
+| Screenshot | What It Shows |
+|------------|---------------|
+| [Project Overview](artifacts/project_overview.png) | TestRail project dashboard — activity feed, milestones, and test runs at a glance |
+| [Milestones](artifacts/milestones.png) | Milestones list with "SauceDemo v1.0 — UAT Ready" at 100% completion |
+| [Milestone Status](artifacts/milestone_status.png) | Pie chart breakdown — 13 Passed / 0 Failed (100% pass rate) |
+| [Milestone Activity](artifacts/milestone_activity.png) | Timeline showing all 13 test results posted automatically during the Jenkins build |
+| [Test Cases](artifacts/testcases.png) | All 6 sections (Login, PDF Receipt, Product Image Integrity, Product Sort, Session Management, Visual Regression) with cases C2–C14 |
+| [Test Case Detail (C2)](artifacts/single_test_case.png) | Individual test case view — Type: Functional, Priority: High, Is Automated: Yes |
+| [Test Run Report](artifacts/testrun_report.png) | "Regression & Smoke" run results — all 13 cases PASSED with automated comments |
+
+---
+
 ## Reports
 
 Test run reports exported from TestRail are in the [`reports/`](reports/) directory:
 
-- Run summary with pass/fail status per test case
-- Coverage by section
-- Execution timeline
+- [Regression & Smoke - TestRail.pdf](reports/Regression%20%26%20Smoke%20-%20TestRail.pdf) — Run summary with pass/fail status per test case, coverage by section, and execution timeline
 
 > **Note**: Reports are PDF exports from the TestRail cloud instance.
 
