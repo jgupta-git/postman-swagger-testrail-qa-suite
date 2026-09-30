@@ -11,7 +11,7 @@ A complete QA portfolio showcasing both **manual** and **automated** API/UI test
 Manual API testing of the [Swagger Petstore](https://petstore.swagger.io/) using Postman, with test cases managed in TestRail.
 
 - **API Under Test**: Swagger Petstore (OpenAPI 2.0) — 20 endpoints across 3 tags
-- **Tools**: Postman (23 requests with chained variables and assertions), Newman CLI, TestRail
+- **Tools**: Postman (23 requests with chained variables and assertions), TestRail
 - **Test Cases**: 25 manual test cases (TC-01 – TC-25) covering positive flows, negative tests, and boundary conditions
 - **Results**: 22/25 PASSED — 3 failures traced to API bugs
 - **Bugs Filed**: 3 defects (credentials in query string, missing deprecation headers, no server-side validation)
@@ -40,7 +40,7 @@ Automated test result reporting from a Cucumber/Playwright test suite to TestRai
 |-----------|-------------------|----------------------|
 | **Testing Type** | Manual API testing via Postman | Automated UI/E2E testing via Playwright |
 | **Spec Source** | OpenAPI/Swagger spec analysis | BDD feature files (Gherkin) |
-| **Execution** | Postman Collection Runner / Newman | Jenkins CI/CD pipeline |
+| **Execution** | Postman Collection Runner | Jenkins CI/CD pipeline |
 | **Result Reporting** | Manual entry in TestRail | Automated via TestRail API hook |
 | **Defect Tracking** | Markdown bug reports (Jira-style) | Automated pass/fail — no defects found |
 

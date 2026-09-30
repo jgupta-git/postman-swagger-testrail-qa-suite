@@ -15,7 +15,6 @@ flowchart TD
 
     subgraph Postman["Postman Testing"]
         D["Import Collection\n(23 requests)"] --> E["Execute Tests\n(Assertions + Chained Variables)"]
-        E --> F["Newman CLI\n(Optional CI run)"]
     end
 
     subgraph TestRail["TestRail — Test Management"]
@@ -31,7 +30,7 @@ flowchart TD
 
     C --> D
     C --> G
-    F --> H
+    E --> H
 ```
 
 ---
@@ -50,7 +49,6 @@ flowchart TD
 | │ └── [Petstore-API-Tests.postman_collection.json](postman/collections/Petstore-API-Tests.postman_collection.json) | 23 requests with test scripts across Pet, Store, User |
 | ├── **environments/** | |
 | │ └── [Petstore-Dev.postman_environment.json](postman/environments/Petstore-Dev.postman_environment.json) | Dev environment (base URL, API key, dynamic variables) |
-| └── **newman-reports/** | Newman CLI HTML reports (generated on demand) |
 | **testrail/** | |
 | ├── **test-cases/** | |
 | │ ├── [pet-test-cases.csv](testrail/test-cases/pet-test-cases.csv) | 8 Pet section test cases (TestRail CSV import) |
@@ -124,7 +122,6 @@ flowchart TD
 |-----------|-----------|
 | API Spec | Swagger / OpenAPI 2.0 |
 | API Client | Postman (manual execution + test scripts) |
-| CLI Runner | Newman (Postman command-line runner) |
 | Test Management | TestRail |
 | Target API | [Swagger Petstore](https://petstore.swagger.io/) |
 | Bug Tracking | Documented in Markdown (simulating Jira-style reports) |
@@ -136,7 +133,7 @@ flowchart TD
 1. **Analyze the API spec** — review the Swagger/OpenAPI definition, map all endpoints, note data models, auth, and deprecation flags
 2. **Write test cases** — create 25 manual test cases in TestRail CSV format covering positive, negative, and boundary scenarios
 3. **Build the Postman collection** — 23 requests with chained variables (petId, orderId, username flow between requests), pre/post test scripts, and assertions
-4. **Execute tests** — run the collection manually in Postman or via Newman CLI
+4. **Execute tests** — run the collection manually in Postman using the Collection Runner
 5. **Record results in TestRail** — update the test run with PASS/FAIL per case
 6. **File bug reports** — document any defects found with steps to reproduce, expected vs. actual, severity, and impact
 
@@ -183,17 +180,6 @@ Create user → Create with array → Create with list → Login → Get user �
 2. Import the environment: `postman/environments/Petstore-Dev.postman_environment.json`
 3. Select **Petstore — Dev** environment
 4. Run the collection using the Collection Runner (run in order — requests are chained)
-
-### With Newman (CLI)
-
-```bash
-npm install -g newman newman-reporter-html
-
-newman run postman/collections/Petstore-API-Tests.postman_collection.json \
-  -e postman/environments/Petstore-Dev.postman_environment.json \
-  --reporters cli,html \
-  --reporter-html-export postman/newman-reports/petstore-report.html
-```
 
 ---
 
