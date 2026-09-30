@@ -86,7 +86,8 @@ flowchart TD
 | ├── [testrail-tc22-deleted-pet-404.pdf](artifacts/testrail-tc22-deleted-pet-404.pdf) | TC-22 Get deleted pet — negative (Passed) |
 | ├── [testrail-tc23-invalid-order-id.pdf](artifacts/testrail-tc23-invalid-order-id.pdf) | TC-23 Find order with out-of-range ID — negative (Passed) |
 | ├── [testrail-tc24-deleted-user-404.pdf](artifacts/testrail-tc24-deleted-user-404.pdf) | TC-24 Get deleted user — negative (Passed) |
-| └── [testrail-tc25-missing-field-bug003.pdf](artifacts/testrail-tc25-missing-field-bug003.pdf) | TC-25 Missing field validation — BUG-003 (Failed) |
+| ├── [testrail-tc25-missing-field-bug003.pdf](artifacts/testrail-tc25-missing-field-bug003.pdf) | TC-25 Missing field validation — BUG-003 (Failed) |
+| └── [testrail-milestone-report.pdf](artifacts/testrail-milestone-report.pdf) | TestRail Milestone Report — overall test run summary (84% pass rate) |
 
 ---
 
@@ -209,6 +210,10 @@ Key findings from the spec analysis (full details in [endpoint-coverage.md](swag
 ---
 
 ## Artifacts & Screenshots
+
+### TestRail Milestone Report
+
+📊 **[Petstore API v1.0 — Manual QA Milestone Report](artifacts/testrail-milestone-report.pdf)** — Overall test run summary exported from TestRail, including milestone pie chart (84% pass rate), activity timeline, and per-case results breakdown.
 
 ### Postman Collection Runner
 
