@@ -53,13 +53,40 @@ flowchart TD
 | └── **newman-reports/** | Newman CLI HTML reports (generated on demand) |
 | **testrail/** | |
 | ├── **test-cases/** | |
-| │ └── [petstore-manual-test-cases.csv](testrail/test-cases/petstore-manual-test-cases.csv) | 25 test cases in TestRail CSV import format |
+| │ ├── [pet-test-cases.csv](testrail/test-cases/pet-test-cases.csv) | 8 Pet section test cases (TestRail CSV import) |
+| │ ├── [store-test-cases.csv](testrail/test-cases/store-test-cases.csv) | 4 Store section test cases |
+| │ ├── [user-test-cases.csv](testrail/test-cases/user-test-cases.csv) | 8 User section test cases |
+| │ └── [negative-test-cases.csv](testrail/test-cases/negative-test-cases.csv) | 5 Negative test cases |
 | └── **test-plan/** | |
 | │ └── [test-plan.md](testrail/test-plan/test-plan.md) | Milestone, test plan, test run details |
 | **bug-reports/** | |
 | └── [bug-reports.md](bug-reports/bug-reports.md) | 3 defects found during manual testing |
 | **artifacts/** | |
-| └── *(screenshots from Postman, Swagger UI, TestRail — to be added)* | |
+| ├── [postman-collection-runner-results.png](artifacts/postman-collection-runner-results.png) | Postman Collection Runner — all 23 requests executed |
+| ├── [testrail-tc01-add-pet-passed.pdf](artifacts/testrail-tc01-add-pet-passed.pdf) | TC-01 Add a new pet (Passed) |
+| ├── [testrail-tc02-update-pet.pdf](artifacts/testrail-tc02-update-pet.pdf) | TC-02 Update an existing pet (Passed) |
+| ├── [testrail-tc03-find-by-status.pdf](artifacts/testrail-tc03-find-by-status.pdf) | TC-03 Find pets by status (Passed) |
+| ├── [testrail-tc04-find-by-tags-bug002.pdf](artifacts/testrail-tc04-find-by-tags-bug002.pdf) | TC-04 Find by tags — BUG-002 (Failed) |
+| ├── [testrail-tc05-get-pet-by-id.pdf](artifacts/testrail-tc05-get-pet-by-id.pdf) | TC-05 Get pet by valid ID (Passed) |
+| ├── [testrail-tc06-update-form-data.pdf](artifacts/testrail-tc06-update-form-data.pdf) | TC-06 Update pet with form data (Passed) |
+| ├── [testrail-tc07-delete-pet.pdf](artifacts/testrail-tc07-delete-pet.pdf) | TC-07 Delete a pet (Passed) |
+| ├── [testrail-tc09-get-inventory.pdf](artifacts/testrail-tc09-get-inventory.pdf) | TC-09 Get store inventory (Passed) |
+| ├── [testrail-tc10-place-order.pdf](artifacts/testrail-tc10-place-order.pdf) | TC-10 Place an order (Passed) |
+| ├── [testrail-tc11-find-order.pdf](artifacts/testrail-tc11-find-order.pdf) | TC-11 Find order by valid ID (Passed) |
+| ├── [testrail-tc12-delete-order.pdf](artifacts/testrail-tc12-delete-order.pdf) | TC-12 Delete an order (Passed) |
+| ├── [testrail-tc13-create-user.pdf](artifacts/testrail-tc13-create-user.pdf) | TC-13 Create a single user (Passed) |
+| ├── [testrail-tc14-create-with-array.pdf](artifacts/testrail-tc14-create-with-array.pdf) | TC-14 Create users with array (Passed) |
+| ├── [testrail-tc15-create-with-list.pdf](artifacts/testrail-tc15-create-with-list.pdf) | TC-15 Create users with list (Passed) |
+| ├── [testrail-tc16-login-bug001.pdf](artifacts/testrail-tc16-login-bug001.pdf) | TC-16 Login — BUG-001 (Failed) |
+| ├── [testrail-tc17-logout.pdf](artifacts/testrail-tc17-logout.pdf) | TC-17 Logout user (Passed) |
+| ├── [testrail-tc18-get-user.pdf](artifacts/testrail-tc18-get-user.pdf) | TC-18 Get user by username (Passed) |
+| ├── [testrail-tc19-update-user.pdf](artifacts/testrail-tc19-update-user.pdf) | TC-19 Update user (Passed) |
+| ├── [testrail-tc20-delete-user.pdf](artifacts/testrail-tc20-delete-user.pdf) | TC-20 Delete user (Passed) |
+| ├── [testrail-tc21-invalid-pet-id.pdf](artifacts/testrail-tc21-invalid-pet-id.pdf) | TC-21 Get pet with invalid ID — negative (Passed) |
+| ├── [testrail-tc22-deleted-pet-404.pdf](artifacts/testrail-tc22-deleted-pet-404.pdf) | TC-22 Get deleted pet — negative (Passed) |
+| ├── [testrail-tc23-invalid-order-id.pdf](artifacts/testrail-tc23-invalid-order-id.pdf) | TC-23 Find order with out-of-range ID — negative (Passed) |
+| ├── [testrail-tc24-deleted-user-404.pdf](artifacts/testrail-tc24-deleted-user-404.pdf) | TC-24 Get deleted user — negative (Passed) |
+| └── [testrail-tc25-missing-field-bug003.pdf](artifacts/testrail-tc25-missing-field-bug003.pdf) | TC-25 Missing field validation — BUG-003 (Failed) |
 
 ---
 
@@ -178,6 +205,45 @@ Key findings from the spec analysis (full details in [endpoint-coverage.md](swag
 3. **Deprecated but live**: `findByTags` is deprecated in spec but fully functional with no sunset signal
 4. **Missing validation**: Required fields (`name`, `photoUrls`) not enforced server-side
 5. **Inconsistent errors**: Some endpoints return structured JSON errors, others return plain text
+
+---
+
+## Artifacts & Screenshots
+
+### Postman Collection Runner
+
+| Screenshot | Description |
+|------------|-------------|
+| ![Postman Runner](artifacts/postman-collection-runner-results.png) | **Postman Collection Runner** — All 23 requests executed, 41 test assertions passed |
+
+### TestRail Test Case Results (24 of 25 cases — TC-08 excluded, no image upload in test run)
+
+| Case | Test Case | Result | Notes |
+|------|-----------|--------|-------|
+| [TC-01](artifacts/testrail-tc01-add-pet-passed.pdf) | Add a new pet — valid payload | ✅ Passed | |
+| [TC-02](artifacts/testrail-tc02-update-pet.pdf) | Update an existing pet | ✅ Passed | |
+| [TC-03](artifacts/testrail-tc03-find-by-status.pdf) | Find pets by status — available | ✅ Passed | |
+| [TC-04](artifacts/testrail-tc04-find-by-tags-bug002.pdf) | Find pets by tags (deprecated) | ❌ Failed | BUG-002: No deprecation header |
+| [TC-05](artifacts/testrail-tc05-get-pet-by-id.pdf) | Get pet by valid ID | ✅ Passed | |
+| [TC-06](artifacts/testrail-tc06-update-form-data.pdf) | Update pet with form data | ✅ Passed | |
+| [TC-07](artifacts/testrail-tc07-delete-pet.pdf) | Delete a pet | ✅ Passed | |
+| [TC-09](artifacts/testrail-tc09-get-inventory.pdf) | Get store inventory | ✅ Passed | |
+| [TC-10](artifacts/testrail-tc10-place-order.pdf) | Place an order — valid payload | ✅ Passed | |
+| [TC-11](artifacts/testrail-tc11-find-order.pdf) | Find order by valid ID | ✅ Passed | |
+| [TC-12](artifacts/testrail-tc12-delete-order.pdf) | Delete an order | ✅ Passed | |
+| [TC-13](artifacts/testrail-tc13-create-user.pdf) | Create a single user | ✅ Passed | |
+| [TC-14](artifacts/testrail-tc14-create-with-array.pdf) | Create users with array | ✅ Passed | |
+| [TC-15](artifacts/testrail-tc15-create-with-list.pdf) | Create users with list | ✅ Passed | |
+| [TC-16](artifacts/testrail-tc16-login-bug001.pdf) | Login — valid credentials | ❌ Failed | BUG-001: Password in query string |
+| [TC-17](artifacts/testrail-tc17-logout.pdf) | Logout user | ✅ Passed | |
+| [TC-18](artifacts/testrail-tc18-get-user.pdf) | Get user by username | ✅ Passed | |
+| [TC-19](artifacts/testrail-tc19-update-user.pdf) | Update user | ✅ Passed | |
+| [TC-20](artifacts/testrail-tc20-delete-user.pdf) | Delete user | ✅ Passed | |
+| [TC-21](artifacts/testrail-tc21-invalid-pet-id.pdf) | Get pet with invalid ID (negative) | ✅ Passed | |
+| [TC-22](artifacts/testrail-tc22-deleted-pet-404.pdf) | Get deleted pet (negative) | ✅ Passed | Confirms 404 after deletion |
+| [TC-23](artifacts/testrail-tc23-invalid-order-id.pdf) | Find order with out-of-range ID (negative) | ✅ Passed | |
+| [TC-24](artifacts/testrail-tc24-deleted-user-404.pdf) | Get deleted user (negative) | ✅ Passed | |
+| [TC-25](artifacts/testrail-tc25-missing-field-bug003.pdf) | Add pet without required field (negative) | ❌ Failed | BUG-003: Missing field validation |
 
 ---
 
