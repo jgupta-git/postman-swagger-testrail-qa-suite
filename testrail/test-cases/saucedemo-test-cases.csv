@@ -1,0 +1,56 @@
+Title,Section,Type,Priority,Estimate,References,Preconditions,Steps,Expected Result,Is Automated
+All non-restricted users can log in successfully,Login,Functional,High,,REQ-001,"SauceDemo site is accessible, user has valid credentials","1. Navigate to saucedemo.com
+2. Enter valid username (standard_user, problem_user, performance_glitch_user, error_user, visual_user)
+3. Enter universal password
+4. Click Login","User lands on the inventory/products page",Yes
+A locked-out user is refused login,Login,Functional,High,,REQ-001,"SauceDemo site is accessible, locked_out_user credentials available","1. Navigate to saucedemo.com
+2. Enter username locked_out_user
+3. Enter universal password
+4. Click Login","Error message: Epic sadface: Sorry, this user has been locked out.",Yes
+Empty or unknown username is rejected,Login,Functional,Medium,,REQ-001,SauceDemo site is accessible,"1. Navigate to saucedemo.com
+2. Leave username empty OR enter invalid_user
+3. Enter universal password
+4. Click Login","Error message: Username is required OR Username and password do not match",Yes
+Empty or wrong password is rejected,Login,Functional,Medium,,REQ-001,SauceDemo site is accessible,"1. Navigate to saucedemo.com
+2. Enter valid username standard_user
+3. Leave password empty OR enter wrong_password
+4. Click Login","Error message: Password is required OR Username and password do not match",Yes
+On-screen and PDF receipt totals match the expected price,PDF Receipt,Functional,High,,REQ-002,User is logged in as standard_user,"1. Add Sauce Labs Backpack and Sauce Labs Bike Light to cart
+2. Click cart icon
+3. Complete checkout with valid info
+4. Verify on-screen totals (item: $39.98, tax: $3.20, total: $43.18)
+5. Download PDF receipt
+6. Verify PDF totals match on-screen values","On-screen and PDF totals match; line items match cart contents",Yes
+Every product shows a distinct image,Product Image Integrity,Functional,Medium,,REQ-003,User is logged in as standard_user,"1. Navigate to inventory page
+2. Collect all product image src attributes
+3. Compare for uniqueness","All 6 product images have unique src URLs",Yes
+problem_user sees the same broken image for every product,Product Image Integrity,Functional,Medium,,REQ-003,User is logged in as problem_user,"1. Log in as problem_user
+2. Navigate to inventory page
+3. Collect all product image src attributes
+4. Verify all images are identical","All product images share the same broken image URL",Yes
+Sorting actually reorders the product list,Product Sort,Functional,Medium,,REQ-004,User is logged in as standard_user,"1. Navigate to inventory page
+2. Select sort option (Price low to high / Price high to low)
+3. Collect product prices in displayed order
+4. Verify order matches selected sort","Products are displayed in correct ascending/descending price order",Yes
+problem_user's price sort is broken,Product Sort,Functional,Medium,,REQ-004,User is logged in as problem_user,"1. Log in as problem_user
+2. Navigate to inventory page
+3. Select Price (high to low)
+4. Collect product prices
+5. Verify order is NOT descending","Product prices are NOT in correct descending order (known bug)",Yes
+Reset App State clears the cart without refreshing the page,Session Management,Functional,Medium,,REQ-005,User is logged in as standard_user,"1. Add Sauce Labs Backpack to cart
+2. Open hamburger menu
+3. Click Reset App State
+4. Check cart badge","Cart badge is cleared (no item count displayed)",Yes
+Logging out blocks access to the inventory page via the browser back button,Session Management,Functional,High,,REQ-005,User is logged in as standard_user,"1. Open hamburger menu
+2. Click Logout
+3. Press browser Back button
+4. Check for error message","Error: You can only access '/inventory.html' when you are logged in.",Yes
+The backpack product image is visually stable,Visual Regression,Functional,Medium,,REQ-006,User is logged in as standard_user,"1. Navigate to inventory page
+2. Capture backpack product image as known-good baseline
+3. Compare current image against baseline
+4. Calculate pixel diff percentage","Pixel diff is <= 2% (images match within tolerance)",Yes
+visual_user's backpack image differs from the correct rendering,Visual Regression,Functional,Medium,,REQ-006,"User can log in as both standard_user and visual_user","1. Log in as standard_user and capture backpack image as baseline
+2. Log out
+3. Log in as visual_user
+4. Capture backpack image
+5. Compare against baseline","Images do NOT match (pixel diff > 2%) confirming visual_user renders differently",Yes
