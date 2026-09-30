@@ -1,0 +1,25 @@
+ID,Title,Section,Type,Priority,Preconditions,Steps,Expected Result,Automation Status
+TC-01,Add a new pet — valid payload,Pet,Functional,High,Petstore API is accessible,"1. Send POST /pet with valid JSON body (name, photoUrls, status)
+2. Verify response status
+3. Verify response body contains pet ID and name","Status 200. Response contains pet with matching name, category, and status. Pet ID is returned.",Manual
+TC-02,Update an existing pet,Pet,Functional,High,Pet ID 91001 exists in the store,"1. Send PUT /pet with updated status (sold)
+2. Verify response
+3. Send GET /pet/{petId} to confirm update",Status 200. Pet status updated to 'sold'. GET confirms the change persisted.,Manual
+TC-03,Find pets by status — available,Pet,Functional,High,At least one pet with status 'available' exists,"1. Send GET /pet/findByStatus?status=available
+2. Verify response is a non-empty array
+3. Verify all returned pets have status 'available'",Status 200. Array of pets returned. Every pet object has status = 'available'.,Manual
+TC-04,Find pets by tags (deprecated endpoint),Pet,Functional,Medium,Pets with tag 'golden-retriever' exist,"1. Send GET /pet/findByTags?tags=golden-retriever
+2. Verify response
+3. Note: endpoint is marked deprecated in spec",Status 200. Array returned (endpoint still responds despite deprecation). No sunset header present.,Manual
+TC-05,Get pet by valid ID,Pet,Functional,High,Pet with known ID exists,"1. Send GET /pet/{petId} with a valid pet ID
+2. Verify response status and body structure
+3. Verify required fields: id, name, photoUrls","Status 200. Response contains pet with correct ID, name, photoUrls, and status.",Manual
+TC-06,Update pet with form data,Pet,Functional,Medium,Pet ID 91001 exists,"1. Send POST /pet/{petId} with Content-Type: application/x-www-form-urlencoded
+2. Include name and status fields
+3. Verify update via GET",Status 200. Pet name and status updated when retrieved.,Manual
+TC-07,Delete a pet,Pet,Functional,High,Pet ID 91001 exists,"1. Send DELETE /pet/{petId} with api_key header
+2. Verify response
+3. Send GET /pet/{petId} to confirm deletion",Status 200 on delete. Subsequent GET returns 404.,Manual
+TC-08,Upload pet image,Pet,Functional,Medium,Pet ID exists,"1. Send POST /pet/{petId}/uploadImage with multipart/form-data
+2. Include an image file and additionalMetadata
+3. Verify response",Status 200. ApiResponse with code 200 and message containing 'File uploaded'.,Manual

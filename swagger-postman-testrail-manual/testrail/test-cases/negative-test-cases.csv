@@ -1,0 +1,11 @@
+ID,Title,Section,Type,Priority,Preconditions,Steps,Expected Result,Automation Status
+TC-21,Get pet with invalid ID (negative),Pet,Negative,High,None,"1. Send GET /pet/invalidId (non-numeric string)
+2. Verify error response",Status 400 or 404. Error message returned (actual: inconsistent — sometimes returns NumberFormatException).,Manual
+TC-22,Get deleted pet (negative),Pet,Negative,High,Pet has been deleted,"1. Delete a pet
+2. Immediately send GET /pet/{petId}",Status 404. Pet not found message.,Manual
+TC-25,Add pet without required field (negative),Pet,Negative,High,None,"1. Send POST /pet with body missing 'name' field
+2. Verify error response",Expected: Status 400 with validation error. Actual: API returns 200 (BUG — see BUG-003).,Manual
+TC-23,Find order with out-of-range ID (negative),Store,Negative,Medium,None,"1. Send GET /store/order/9999
+2. Verify error response",Status 404. Order not found (spec says IDs must be 1–10).,Manual
+TC-24,Get deleted user (negative),User,Negative,High,User has been deleted,"1. Delete a user
+2. Immediately send GET /user/{username}",Status 404. User not found message.,Manual

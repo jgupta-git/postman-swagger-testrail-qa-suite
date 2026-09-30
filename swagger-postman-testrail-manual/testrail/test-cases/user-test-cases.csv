@@ -1,0 +1,19 @@
+ID,Title,Section,Type,Priority,Preconditions,Steps,Expected Result,Automation Status
+TC-13,Create a single user,User,Functional,High,None,"1. Send POST /user with valid user JSON
+2. Verify response",Status 200. ApiResponse with message containing user ID.,Manual
+TC-14,Create users with array,User,Functional,Medium,None,"1. Send POST /user/createWithArray with array of 2 user objects
+2. Verify response",Status 200. ApiResponse indicates success.,Manual
+TC-15,Create users with list,User,Functional,Medium,None,"1. Send POST /user/createWithList with list of 1 user object
+2. Verify response",Status 200. ApiResponse indicates success.,Manual
+TC-16,Login — valid credentials,User,Functional,High,User 'qaengineer' exists,"1. Send GET /user/login?username=qaengineer&password=Test@1234
+2. Verify response contains session info",Status 200. Message includes 'logged in user session' with session token.,Manual
+TC-17,Logout user,User,Functional,Medium,User is logged in,"1. Send GET /user/logout
+2. Verify response",Status 200. Logout confirmation returned.,Manual
+TC-18,Get user by username,User,Functional,High,User 'qaengineer' exists,"1. Send GET /user/{username}
+2. Verify username, email, and other fields match","Status 200. User object with correct username, firstName, lastName, email.",Manual
+TC-19,Update user,User,Functional,Medium,User 'qaengineer' exists,"1. Send PUT /user/{username} with updated email and phone
+2. Verify response
+3. Send GET /user/{username} to confirm",Status 200. Updated fields reflected on subsequent GET.,Manual
+TC-20,Delete user,User,Functional,Medium,User 'qaengineer' exists,"1. Send DELETE /user/{username}
+2. Verify response
+3. Send GET /user/{username} to confirm deletion",Status 200 on delete. Subsequent GET returns 404.,Manual

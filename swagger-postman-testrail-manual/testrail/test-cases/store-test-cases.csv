@@ -1,0 +1,12 @@
+ID,Title,Section,Type,Priority,Preconditions,Steps,Expected Result,Automation Status
+TC-09,Get store inventory,Store,Functional,Medium,Store has at least one pet,"1. Send GET /store/inventory
+2. Verify response is a JSON object
+3. Verify Content-Type header",Status 200. JSON object with status names as keys and counts as values.,Manual
+TC-10,Place an order — valid payload,Store,Functional,High,Valid petId exists,"1. Send POST /store/order with valid JSON (petId, quantity, shipDate, status)
+2. Verify response status and body
+3. Verify order ID is returned","Status 200. Order returned with matching petId, status 'placed', and a valid order ID.",Manual
+TC-11,Find order by valid ID,Store,Functional,High,Order has been placed (ID 1–10),"1. Send GET /store/order/{orderId}
+2. Verify response body matches placed order","Status 200. Order object with correct ID, petId, quantity, and status.",Manual
+TC-12,Delete an order,Store,Functional,Medium,Order exists,"1. Send DELETE /store/order/{orderId}
+2. Verify response
+3. Send GET /store/order/{orderId} to confirm",Status 200 on delete. Subsequent GET returns 404.,Manual
