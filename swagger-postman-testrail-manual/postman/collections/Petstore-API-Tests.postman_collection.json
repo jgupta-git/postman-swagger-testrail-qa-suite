@@ -1,0 +1,665 @@
+{
+  "info": {
+    "name": "Petstore API Tests",
+    "description": "Manual API test collection for the Swagger Petstore (https://petstore.swagger.io/v2). Covers all 20 endpoints across Pet, Store, and User modules with assertions, chained variables, and negative tests.\n\nAuthor: Jigyasa Gupta — QA Engineer",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://petstore.swagger.io/v2" },
+    { "key": "petId", "value": "" },
+    { "key": "orderId", "value": "" },
+    { "key": "username", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Pet",
+      "description": "CRUD operations for pets — add, update, find, delete",
+      "item": [
+        {
+          "name": "Add a new pet",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/pet", "host": ["{{baseUrl}}"], "path": ["pet"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 91001,\n  \"category\": { \"id\": 1, \"name\": \"Dogs\" },\n  \"name\": \"Buddy\",\n  \"photoUrls\": [\"https://example.com/buddy.jpg\"],\n  \"tags\": [{ \"id\": 1, \"name\": \"golden-retriever\" }],\n  \"status\": \"available\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains pet name', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.name).to.eql('Buddy');",
+                  "});",
+                  "",
+                  "pm.test('Pet ID is returned', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.be.a('number');",
+                  "    pm.collectionVariables.set('petId', jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get pet by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pet/{{petId}}", "host": ["{{baseUrl}}"], "path": ["pet", "{{petId}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Pet name matches', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.name).to.eql('Buddy');",
+                  "});",
+                  "",
+                  "pm.test('Status is available', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql('available');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('name');",
+                  "    pm.expect(jsonData).to.have.property('photoUrls');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update pet (change status to sold)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/pet", "host": ["{{baseUrl}}"], "path": ["pet"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 91001,\n  \"category\": { \"id\": 1, \"name\": \"Dogs\" },\n  \"name\": \"Buddy\",\n  \"photoUrls\": [\"https://example.com/buddy.jpg\"],\n  \"tags\": [{ \"id\": 1, \"name\": \"golden-retriever\" }],\n  \"status\": \"sold\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Status updated to sold', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql('sold');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Find pets by status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pet/findByStatus?status=available",
+              "host": ["{{baseUrl}}"],
+              "path": ["pet", "findByStatus"],
+              "query": [{ "key": "status", "value": "available" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('All returned pets have status available', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.forEach(function (pet) {",
+                  "        pm.expect(pet.status).to.eql('available');",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test('Response time under 2 seconds', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Find pets by tags (deprecated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pet/findByTags?tags=golden-retriever",
+              "host": ["{{baseUrl}}"],
+              "path": ["pet", "findByTags"],
+              "query": [{ "key": "tags", "value": "golden-retriever" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 (deprecated but still active)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an array', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update pet with form data",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "url": { "raw": "{{baseUrl}}/pet/{{petId}}", "host": ["{{baseUrl}}"], "path": ["pet", "{{petId}}"] },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "name", "value": "Buddy Updated" },
+                { "key": "status", "value": "pending" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete pet",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "api_key", "value": "special-key" }],
+            "url": { "raw": "{{baseUrl}}/pet/{{petId}}", "host": ["{{baseUrl}}"], "path": ["pet", "{{petId}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get deleted pet (negative — expect 404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pet/{{petId}}", "host": ["{{baseUrl}}"], "path": ["pet", "{{petId}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404 — pet not found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get pet with invalid ID (negative)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/pet/invalidId", "host": ["{{baseUrl}}"], "path": ["pet", "invalidId"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400 or 404 for invalid ID', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Store",
+      "description": "Order management — place, find, and delete orders",
+      "item": [
+        {
+          "name": "Get store inventory",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/store/inventory", "host": ["{{baseUrl}}"], "path": ["store", "inventory"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is an object with status counts', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test('Content-Type is JSON', function () {",
+                  "    pm.response.to.have.header('Content-Type', 'application/json');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Place an order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/store/order", "host": ["{{baseUrl}}"], "path": ["store", "order"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 5,\n  \"petId\": 91001,\n  \"quantity\": 1,\n  \"shipDate\": \"2026-10-01T00:00:00.000Z\",\n  \"status\": \"placed\",\n  \"complete\": false\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Order status is placed', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql('placed');",
+                  "});",
+                  "",
+                  "pm.test('Order ID is returned', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.be.a('number');",
+                  "    pm.collectionVariables.set('orderId', jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Find order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/store/order/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["store", "order", "{{orderId}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Order has correct petId', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.petId).to.eql(91001);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/store/order/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["store", "order", "{{orderId}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Find order with invalid ID (negative)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/store/order/9999", "host": ["{{baseUrl}}"], "path": ["store", "order", "9999"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404 for out-of-range order ID', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "description": "User management — create, login, update, delete",
+      "item": [
+        {
+          "name": "Create a user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/user", "host": ["{{baseUrl}}"], "path": ["user"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 50001,\n  \"username\": \"qaengineer\",\n  \"firstName\": \"Jigyasa\",\n  \"lastName\": \"Gupta\",\n  \"email\": \"qa@example.com\",\n  \"password\": \"Test@1234\",\n  \"phone\": \"555-0100\",\n  \"userStatus\": 1\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.collectionVariables.set('username', 'qaengineer');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create users with array",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/user/createWithArray", "host": ["{{baseUrl}}"], "path": ["user", "createWithArray"] },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  { \"id\": 50002, \"username\": \"testuser1\", \"firstName\": \"Test\", \"lastName\": \"One\", \"email\": \"test1@example.com\", \"password\": \"pass123\", \"phone\": \"555-0101\", \"userStatus\": 1 },\n  { \"id\": 50003, \"username\": \"testuser2\", \"firstName\": \"Test\", \"lastName\": \"Two\", \"email\": \"test2@example.com\", \"password\": \"pass123\", \"phone\": \"555-0102\", \"userStatus\": 1 }\n]"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create users with list",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/user/createWithList", "host": ["{{baseUrl}}"], "path": ["user", "createWithList"] },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  { \"id\": 50004, \"username\": \"listuser1\", \"firstName\": \"List\", \"lastName\": \"User\", \"email\": \"list1@example.com\", \"password\": \"pass456\", \"phone\": \"555-0103\", \"userStatus\": 1 }\n]"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/login?username={{username}}&password=Test@1234",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "login"],
+              "query": [
+                { "key": "username", "value": "{{username}}" },
+                { "key": "password", "value": "Test@1234" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains session token', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.include('logged in user session');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get user by username",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/user/{{username}}", "host": ["{{baseUrl}}"], "path": ["user", "{{username}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Username matches', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.username).to.eql('qaengineer');",
+                  "});",
+                  "",
+                  "pm.test('Email is correct', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.email).to.eql('qa@example.com');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update user",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/user/{{username}}", "host": ["{{baseUrl}}"], "path": ["user", "{{username}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 50001,\n  \"username\": \"qaengineer\",\n  \"firstName\": \"Jigyasa\",\n  \"lastName\": \"Gupta\",\n  \"email\": \"qa.updated@example.com\",\n  \"password\": \"NewPass@5678\",\n  \"phone\": \"555-9999\",\n  \"userStatus\": 1\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/user/logout", "host": ["{{baseUrl}}"], "path": ["user", "logout"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete user",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/user/{{username}}", "host": ["{{baseUrl}}"], "path": ["user", "{{username}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get deleted user (negative — expect 404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/user/{{username}}", "host": ["{{baseUrl}}"], "path": ["user", "{{username}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404 — user not found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

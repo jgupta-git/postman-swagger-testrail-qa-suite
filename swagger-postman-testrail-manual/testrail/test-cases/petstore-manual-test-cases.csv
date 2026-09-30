@@ -1,0 +1,64 @@
+ID,Title,Section,Type,Priority,Preconditions,Steps,Expected Result,Automation Status
+TC-01,Add a new pet — valid payload,Pet,Functional,High,"Petstore API is accessible","1. Send POST /pet with valid JSON body (name, photoUrls, status)
+2. Verify response status
+3. Verify response body contains pet ID and name","Status 200. Response contains pet with matching name, category, and status. Pet ID is returned.",Manual
+TC-02,Update an existing pet,Pet,Functional,High,"Pet ID 91001 exists in the store","1. Send PUT /pet with updated status (sold)
+2. Verify response
+3. Send GET /pet/{petId} to confirm update","Status 200. Pet status updated to 'sold'. GET confirms the change persisted.",Manual
+TC-03,Find pets by status — available,Pet,Functional,High,"At least one pet with status 'available' exists","1. Send GET /pet/findByStatus?status=available
+2. Verify response is a non-empty array
+3. Verify all returned pets have status 'available'","Status 200. Array of pets returned. Every pet object has status = 'available'.",Manual
+TC-04,Find pets by tags (deprecated endpoint),Pet,Functional,Medium,"Pets with tag 'golden-retriever' exist","1. Send GET /pet/findByTags?tags=golden-retriever
+2. Verify response
+3. Note: endpoint is marked deprecated in spec","Status 200. Array returned (endpoint still responds despite deprecation). No sunset header present.",Manual
+TC-05,Get pet by valid ID,Pet,Functional,High,"Pet with known ID exists","1. Send GET /pet/{petId} with a valid pet ID
+2. Verify response status and body structure
+3. Verify required fields: id, name, photoUrls","Status 200. Response contains pet with correct ID, name, photoUrls, and status.",Manual
+TC-06,Update pet with form data,Pet,Functional,Medium,"Pet ID 91001 exists","1. Send POST /pet/{petId} with Content-Type: application/x-www-form-urlencoded
+2. Include name and status fields
+3. Verify update via GET","Status 200. Pet name and status updated when retrieved.",Manual
+TC-07,Delete a pet,Pet,Functional,High,"Pet ID 91001 exists","1. Send DELETE /pet/{petId} with api_key header
+2. Verify response
+3. Send GET /pet/{petId} to confirm deletion","Status 200 on delete. Subsequent GET returns 404.",Manual
+TC-08,Upload pet image,Pet,Functional,Medium,"Pet ID exists","1. Send POST /pet/{petId}/uploadImage with multipart/form-data
+2. Include an image file and additionalMetadata
+3. Verify response","Status 200. ApiResponse with code 200 and message containing 'File uploaded'.",Manual
+TC-09,Get store inventory,Store,Functional,Medium,"Store has at least one pet","1. Send GET /store/inventory
+2. Verify response is a JSON object
+3. Verify Content-Type header","Status 200. JSON object with status names as keys and counts as values.",Manual
+TC-10,Place an order — valid payload,Store,Functional,High,"Valid petId exists","1. Send POST /store/order with valid JSON (petId, quantity, shipDate, status)
+2. Verify response status and body
+3. Verify order ID is returned","Status 200. Order returned with matching petId, status 'placed', and a valid order ID.",Manual
+TC-11,Find order by valid ID,Store,Functional,High,"Order has been placed (ID 1–10)","1. Send GET /store/order/{orderId}
+2. Verify response body matches placed order","Status 200. Order object with correct ID, petId, quantity, and status.",Manual
+TC-12,Delete an order,Store,Functional,Medium,"Order exists","1. Send DELETE /store/order/{orderId}
+2. Verify response
+3. Send GET /store/order/{orderId} to confirm","Status 200 on delete. Subsequent GET returns 404.",Manual
+TC-13,Create a single user,User,Functional,High,"None","1. Send POST /user with valid user JSON
+2. Verify response","Status 200. ApiResponse with message containing user ID.",Manual
+TC-14,Create users with array,User,Functional,Medium,"None","1. Send POST /user/createWithArray with array of 2 user objects
+2. Verify response","Status 200. ApiResponse indicates success.",Manual
+TC-15,Create users with list,User,Functional,Medium,"None","1. Send POST /user/createWithList with list of 1 user object
+2. Verify response","Status 200. ApiResponse indicates success.",Manual
+TC-16,Login — valid credentials,User,Functional,High,"User 'qaengineer' exists","1. Send GET /user/login?username=qaengineer&password=Test@1234
+2. Verify response contains session info","Status 200. Message includes 'logged in user session' with session token.",Manual
+TC-17,Logout user,User,Functional,Medium,"User is logged in","1. Send GET /user/logout
+2. Verify response","Status 200. Logout confirmation returned.",Manual
+TC-18,Get user by username,User,Functional,High,"User 'qaengineer' exists","1. Send GET /user/{username}
+2. Verify username, email, and other fields match","Status 200. User object with correct username, firstName, lastName, email.",Manual
+TC-19,Update user,User,Functional,Medium,"User 'qaengineer' exists","1. Send PUT /user/{username} with updated email and phone
+2. Verify response
+3. Send GET /user/{username} to confirm","Status 200. Updated fields reflected on subsequent GET.",Manual
+TC-20,Delete user,User,Functional,Medium,"User 'qaengineer' exists","1. Send DELETE /user/{username}
+2. Verify response
+3. Send GET /user/{username} to confirm deletion","Status 200 on delete. Subsequent GET returns 404.",Manual
+TC-21,Get pet with invalid ID (negative),Pet,Negative,High,"None","1. Send GET /pet/invalidId (non-numeric string)
+2. Verify error response","Status 400 or 404. Error message returned (actual: inconsistent — sometimes returns NumberFormatException).",Manual
+TC-22,Get deleted pet (negative),Pet,Negative,High,"Pet has been deleted","1. Delete a pet
+2. Immediately send GET /pet/{petId}","Status 404. Pet not found message.",Manual
+TC-23,Find order with out-of-range ID (negative),Store,Negative,Medium,"None","1. Send GET /store/order/9999
+2. Verify error response","Status 404. Order not found (spec says IDs must be 1–10).",Manual
+TC-24,Get deleted user (negative),User,Negative,High,"User has been deleted","1. Delete a user
+2. Immediately send GET /user/{username}","Status 404. User not found message.",Manual
+TC-25,Add pet without required field (negative),Pet,Negative,High,"None","1. Send POST /pet with body missing 'name' field
+2. Verify error response","Expected: Status 400 with validation error. Actual: API returns 200 (BUG — see BUG-003).",Manual

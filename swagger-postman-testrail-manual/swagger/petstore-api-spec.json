@@ -1,0 +1,20 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Swagger Petstore API — used as the target application for manual API testing in this QA portfolio project.",
+    "version": "1.0.7",
+    "title": "Swagger Petstore",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": { "email": "apiteam@swagger.io" },
+    "license": { "name": "Apache 2.0", "url": "http://www.apache.org/licenses/LICENSE-2.0.html" }
+  },
+  "host": "petstore.swagger.io",
+  "basePath": "/v2",
+  "schemes": ["https", "http"],
+  "tags": [
+    { "name": "pet", "description": "Everything about your Pets" },
+    { "name": "store", "description": "Access to Petstore orders" },
+    { "name": "user", "description": "Operations about user" }
+  ],
+  "_note": "This is a reference copy of the Petstore OpenAPI 2.0 spec included for portfolio context. Full spec at https://petstore.swagger.io/v2/swagger.json"
+}
