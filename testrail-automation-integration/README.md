@@ -58,7 +58,8 @@ flowchart TD
 | ├── [saucedemo-test-cases.csv](test-cases/saucedemo-test-cases.csv) | All 13 test cases exported from TestRail |
 | └── [test-plan.md](test-cases/test-plan.md) | Milestone, test plan, and test run details |
 | **reports/** | |
-| └── [Regression & Smoke - TestRail.pdf](reports/Regression%20%26%20Smoke%20-%20TestRail.pdf) | TestRail run report (PDF export) |
+| ├── [Regression & Smoke - TestRail.pdf](reports/Regression%20%26%20Smoke%20-%20TestRail.pdf) | TestRail run report (PDF export) |
+| └── [testrail-milestone-report.pdf](reports/testrail-milestone-report.pdf) | Milestone report — SauceDemo v1.0 UAT Ready (100% pass rate) |
 
 ---
 
@@ -165,6 +166,7 @@ Since the TestRail instance is a 30-day trial (`testingdemoforinterview.testrail
 Test run reports exported from TestRail are in the [`reports/`](reports/) directory:
 
 - [Regression & Smoke - TestRail.pdf](reports/Regression%20%26%20Smoke%20-%20TestRail.pdf) — Run summary with pass/fail status per test case, coverage by section, and execution timeline
+- [testrail-milestone-report.pdf](reports/testrail-milestone-report.pdf) — Overall milestone report: SauceDemo v1.0 — UAT Ready (100% pass rate, 13/13 cases)
 
 > **Note**: Reports are PDF exports from the TestRail cloud instance.
 
